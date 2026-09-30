@@ -1,0 +1,120 @@
+{
+    "info": {
+        "name": "Ledgerly Payment System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8000/api"
+        },
+        {
+            "key": "fastApiUrl",
+            "value": "http://localhost:8001"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "Register",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\":\"alex\",\"email\":\"alex@example.com\",\"password\":\"StrongPass123!\"}"
+                },
+                "url": "{{baseUrl}}/auth/register/"
+            }
+        },
+        {
+            "name": "Login JWT",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\":\"alex\",\"password\":\"StrongPass123!\"}"
+                },
+                "url": "{{baseUrl}}/auth/token/"
+            }
+        },
+        {
+            "name": "Add Card (raw PAN never returned)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"brand\":\"VISA\",\"card_number\":\"4242424242424242\",\"cvv\":\"123\",\"expiry_month\":9,\"expiry_year\":2028}"
+                },
+                "url": "{{baseUrl}}/cards/"
+            }
+        },
+        {
+            "name": "Create Pending Transaction",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"merchant\":\"Northwind Studio\",\"amount\":840.00}"
+                },
+                "url": "{{baseUrl}}/transactions/create/"
+            }
+        },
+        {
+            "name": "Simulate Payment",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"transaction_id\":1,\"amount\":840.00,\"force_status\":\"SUCCESS\"}"
+                },
+                "url": "{{fastApiUrl}}/payments/simulate"
+            }
+        },
+        {
+            "name": "Transaction History",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                    }
+                ],
+                "url": "{{baseUrl}}/transactions/"
+            }
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: payments
+      MYSQL_USER: payments
+      MYSQL_PASSWORD: payments
+      MYSQL_ROOT_PASSWORD: root-password-change-me
+    ports: ['3306:3306']
+    volumes: [mysql_data:/var/lib/mysql]
+  django:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DB_ENGINE: mysql
+      MYSQL_HOST: db
+      MYSQL_DATABASE: payments
+      MYSQL_USER: payments
+      MYSQL_PASSWORD: payments
+      DJANGO_SECRET_KEY: replace-in-production
+    ports: ['8000:8000']
+    depends_on: [db]
+  fastapi:
+    build:
+      context: .
+      dockerfile: payment_service/Dockerfile
+    ports: ['8001:8001']
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports: ['5173:80']
+    depends_on: [django, fastapi]
+volumes:
+  mysql_data:
